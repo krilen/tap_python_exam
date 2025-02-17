@@ -1,5 +1,6 @@
-/.idea/exam_template.iml
-/.idea/modules.xml
-/.idea/inspectionProfiles/profiles_settings.xml
-/.idea/vcs.xml
-/.idea/workspace.xml
+.venv
+.vscode
+Pipfile
+__pycache__/
+.pytest_cache/
+tmp*
