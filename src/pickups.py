@@ -1,6 +1,8 @@
 
 class Item:
-    """Representerar saker man kan plocka upp."""
+    """
+    Representerar saker man kan plocka upp.
+    """
     def __init__(self, name, value=10, symbol="?"):
         self.name = name
         self.value = value
