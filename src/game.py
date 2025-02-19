@@ -1,6 +1,7 @@
 from .grid import Grid
 from .player import Player
 from .items import Pickup
+from .menu import Menu
 
 grid = Grid(36, 12)
 grid.make_walls()
@@ -14,17 +15,10 @@ grid.add_player(player)
 pickups = ["carrot", "apple", "strawberry", "cherry", "watermelon", "radish", "cucumber", "meatball"]
 grid.set_pickup(pickups)
 
+print()
+print()
 
-
-# TODO: flytta denna till en annan fil
-def print_status(game_grid):
-    """Visa spelvärlden och antal poäng."""
-    print("--------------------------------------")
-    print(f"You have 0 points.")
-    print(game_grid)
-
-
-command = "a"
+command = ""
 # Loopa tills användaren trycker Q eller X.
 while not command.casefold() in ["q", "x"]:
     
@@ -42,8 +36,6 @@ while not command.casefold() in ["q", "x"]:
                 board_type = grid.board[player_new_pos] 
                 
                 if board_type != None:
-                    
-                    print(type(grid.board[player_new_pos]) )
                     
                     if isinstance(board_type, Pickup):
                         
@@ -66,10 +58,10 @@ while not command.casefold() in ["q", "x"]:
         case _:
             pass
     
-    
-    print_status(grid)
+    m = Menu()
+    m.show(grid, player.score)
 
-    command = input("Use WASD to move, Q/X to quit. ").casefold()[:1]
+    command = input("Use WASD to move, Q/X to quit >> ").casefold()[:1]
             
 
     """

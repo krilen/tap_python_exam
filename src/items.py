@@ -3,7 +3,6 @@ class Item():
     def __init__(self):
         self.symbol = " "
         self.cross = True
-        self.death = False
         self.points = 0
 
 
