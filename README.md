@@ -11,7 +11,9 @@ python -m src.game
 ```
 
 Tips! Du kan spara denna rad som en "run configuration" i PyCharm.
+
 1. Välj "Edit configurations..."
 2. Ändra i sektionen "run" så det står `module` i stället för `script`
 3. Skriv `src.game` i rutan till höger om `module`
 
+Exam uppgift: https://docs.google.com/document/d/1GhqbgG9YW5cOiR0LLWmMTc-s-VmQudBaNxZUxXL6XJk/edit?usp=sharing
