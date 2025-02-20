@@ -23,7 +23,7 @@ class Grid:
         for y in range(0, self.height):
             for x in range(0, self.width):
                 
-                self.board.update({ (x, y): None })
+                self.board.update({ (x, y): Item() })
 
 
     #def get(self, pos):
@@ -53,7 +53,7 @@ class Grid:
     #    self.set(pos, " .")
         
 
-    # Creates the bord with all its content
+    # Creates the board with all its content
     def __str__(self):
         """
         Creates the board and its contents
@@ -63,12 +63,8 @@ class Grid:
         for y in range(0, self.height):
             for x in range(0, self.width):
                 _item = self.board[(x, y)]
-                
-                if _item == None:
-                    _board += "."
-                    
-                else:
-                    _board += _item.symbol
+
+                _board += _item.symbol
                 
             _board += "\n"
         return _board
@@ -82,10 +78,8 @@ class Grid:
         for tile in self.board:
             (_x, _y) = tile
             
-            if _x == 0 or _y == 0  or _x == self.width -1 or _y == self.height -1:
-                wall = Wall()
-                
-                self.board[tile] = Wall()
+            if _x == 0 or _y == 0  or _x == self.width -1 or _y == self.height -1:                
+                self.board[tile] = Free()
 
 
     def add_player(self, p):
@@ -95,9 +89,15 @@ class Grid:
         while True:
             _pos = (self.width // 2 + random.randint(-2, 2)), (self.height // 2 + random.randint(-1, 1))
             
-            if self.board[_pos] == None:
-                self.board[_pos] = p
-                break
+            #HERE AM I 
+        
+            #print(_pos, self.board[_pos])
+
+            print(isinstance(self.board[_pos], Free))
+
+            #if self.board[_pos] , Item):
+            #    self.board[_pos] = p
+            #    break
 
 
     def calc_position(self, move, item):
@@ -140,6 +140,46 @@ class Grid:
                 if self.board[_check_pos] == None:
                     self.board[_check_pos] = Pickup(pickup)
                     break
+
+
+    def find_item(self, item):
+
+        return list({k: v for (k, v) in self.board.items() if v == item})
+    
+
+
+        
+
+
+
+    def walkthrough(self, p, **kwargs):
+
+        check_pos = [] # To be checked
+        checked_pos = [] # Have been checked
+
+        player_pos = self.find_item(p)
+        
+
+        #player_pos = list({k: v for (k, v) in self.board if v == p}.keys())
+
+
+        # Other object that we should skip checking
+        #for k, v in kwargs.items():
+        #    print(k, v.symbol)
+
+        
+
+
+
+
+        #wall_pos = list({k: v for (k, v) in self.board.items() if }.keys())
+
+        
+
+        #print(checked_pos, player_pos)
+
+
+
             
         
     # Används i filen pickups.py

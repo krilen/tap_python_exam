@@ -11,6 +11,8 @@ grid.make_walls()
 player = Player()
 grid.add_player(player)
 
+#grid.walkthrough(player)
+
 # random items
 pickups = ["carrot", "apple", "strawberry", "cherry", "watermelon", "radish", "cucumber", "meatball"]
 grid.set_pickup(pickups)

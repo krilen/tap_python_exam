@@ -1,11 +1,16 @@
-class Player:
+from .items import Item
+
+class Player(Item):
     marker = "@"
 
     def __init__(self):
+        super().__init__()
+
         self.symbol = "@"    
         self.possible_moves = { "d": (1, 0), "a": (-1, 0), "w": (0, -1), "s": (0, 1) }
         self._inventory = []
         self._score = 0
+        
         
     @property
     def inventory(self):
