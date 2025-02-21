@@ -8,5 +8,5 @@ class Menu():
         """
         print()
         print(g)
-        print(f"You have {points} points.")
+        print(f"You have {points} point{'' if points == 1 else 's'}.")
         print("--------------------------------------")

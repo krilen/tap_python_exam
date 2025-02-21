@@ -1,24 +1,33 @@
 from .grid import Grid
 from .player import Player
-from .items import Pickup
+from .items import *
 from .menu import Menu
 
-grid = Grid(36, 12)
-grid.make_walls()
 
-# Random walls
 
-player = Player()
-grid.add_player(player)
+# This is the setup of the board
+# Loops until we fins a board that is playable
+while True:
+    
+    grid = Grid(36, 12)
+    grid.add_border_walls()
 
-#grid.walkthrough(player)
+    player = Player()
+    grid.add_player(player)
+    
+    grid.add_fences(6, 3, 7) # nr of fences (can be merged), min size, max_size (without merge)
+
+    # Need to walk trough the board to verify access to every tile
+    if grid.check_walkthrough(Player):
+        break
+
 
 # random items
 pickups = ["carrot", "apple", "strawberry", "cherry", "watermelon", "radish", "cucumber", "meatball"]
 grid.set_pickup(pickups)
 
-print()
-print()
+# shovel
+grid.set_shovel()
 
 command = ""
 # Loopa tills användaren trycker Q eller X.
@@ -27,32 +36,39 @@ while not command.casefold() in ["q", "x"]:
     match command:
         
         case "d" | "a" | "w" | "s":
-        
-            player_move = player.possible_moves[command]
-            player_new_pos, player_old_pos = grid.calc_position(player_move, player)
             
-            if grid.check_position(player_new_pos):
-                
-                # Before we move we migh want to pickup or collect what is there then move
-                
-                board_type = grid.board[player_new_pos] 
-                
-                if board_type != None:
-                    
-                    if isinstance(board_type, Pickup):
+            player_move = player.possible_moves[command]
+            player_next_pos, player_current_pos = grid.calc_position(player_move, player)[0]
+            
+            tile_current = grid.board[player_current_pos]
+            tile_next = grid.board[player_next_pos]
+            
+            # ARE HERE WORKING ON HOW TO USE ITEMS Shovel and bombs
                         
-                        print(f"You picked up: {board_type.name}")
-                        player.inventory = board_type
-                        player.score = board_type.points
+            # Tile is always block (perimeter border)
+            if not tile_next.block: 
+            
+                # You are not able to cross fences (, if you do not also have a shovel)
+                if tile_next.cross or (not tile_next.cross and "shovel" in player.inventory):
                 
-                
-                
-                else:
+                    _default_item = Free()
+                    
+                    if not isinstance(tile_next, Free):
+                        
+                        player.inventory = tile_next
+                        player.score = tile_next.item_points()
+
+                    print(player.steps)
+                    
+                    
+                    
                     player.score = -1
-                
-                
-                grid.move_position(player_new_pos, player_old_pos)
-    
+                    player.steps = 1
+                    grid.move_position(player_next_pos, player_current_pos, _default_item)
+                    
+                else:
+                    pass
+                    
     
         case "i":
             print(player)
