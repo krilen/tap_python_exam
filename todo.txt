@@ -21,17 +21,20 @@ On monday look over the exam task to make sure that the default things are done
     - Bomd itself: o
     - Destoyed tile: , (not free so no items popup)
 
- FIXED * With Shovel you can break fences but not walls. It will destoy the shovel
+ Done 
+  * With Shovel you can break fences but not walls. It will destoy the shovel
          Anything that gets borken gets "destroyed"
  
+ Done
  * Eat food and get 10 free steps
 
+ Done - Partly no extra length with food 
  * Jump, pressing 'j' over a tile. During free steps jump over 2
    If you are blocked by a Wall you only jump as far as you can
 
  * Juvels, 3 of them, it you have them att home should appear
-   They are hittden to find them you must have the shovel. If you
-   are within 2 tiles of it the ground wil change to _
+   They are hidden to find them you must have the shovel. If you
+   are within 2 tiles of it the ground will change to _
    Mark lower left border wall with the color
 
  *

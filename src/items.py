@@ -4,12 +4,13 @@ import inspect, sys
 class Item():
     def __init__(self):
         self.symbol = "?"
-        self.block = False          # If True you can never go on the tile (boderwall) 
-        self.cross = True           # If True you can cross over it, False you can not cross it unless... (fence)
+        self.block = False # If True you can never go on the tile (boderwall) 
+        self.cross = True # If True you can cross over it, False you can not cross it unless... (fence)
         self.points = 0
-        self.item_inventory = False
+        self.is_inventory = False # Save to the playes inventory
         self.name = "item"
-        self.is_fence = False
+        self.is_fence = False # Defined as a fence
+
         
     def item_points(self):
         return self.points
@@ -33,7 +34,7 @@ class Food(Item):
         self.name = name
         self.symbol = "?"
         self.points = 20
-        self.item_inventory = True
+        self.is_inventory = True
     
     @classmethod
     def create(cls, name):
@@ -91,15 +92,16 @@ class Shovel(Item):
     
     def __init__(self):
         super().__init__()
+        self.symbol = "S"
         self.name = "shovel"
-        self.item_inventory = True
+        self.is_inventory = True
     
     
 class Bomb(Item):
     def __init__(self):
         super().__init__()
         self.name = "bomb"
-        self.item_inventory = True
+        self.is_inventory = True
 
 
 
@@ -114,7 +116,7 @@ def get_items():
     for name, item_class in _get_item_classes:
         _tmp = item_class()
         
-        if _tmp.item_inventory:
+        if _tmp.is_inventory:
             
             if "create" in dir(_tmp):
                 for item in _tmp.ITEMS:
