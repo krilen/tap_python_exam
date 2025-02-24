@@ -2,7 +2,7 @@ from .griditems import GridItems
 from .gridborder import GridBorder
 from .gridfences import GridFences
 
-from .items import *
+from ..items.items import *
 
 import random, sys
 from typing import Any

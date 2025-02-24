@@ -1,5 +1,5 @@
-from .items import SetBomb, Destroyed
-from .player import Player
+from ..items.items import SetBomb, Destroyed
+from ..player.player import Player
 import sys
 
 

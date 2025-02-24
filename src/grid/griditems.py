@@ -1,4 +1,4 @@
-from .items import *
+from ..items.items import *
 from .gridbomb import GridBomb
 
 import random

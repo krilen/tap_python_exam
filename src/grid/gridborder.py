@@ -1,4 +1,4 @@
-from .items import BorderWall
+from ..items.items import BorderWall
 
 
 class GridBorder():

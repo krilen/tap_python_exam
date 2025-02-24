@@ -1,4 +1,4 @@
-from .items import FenceHorizontal, FenceVertical, FenceIntersect, Free
+from ..items.items import FenceHorizontal, FenceVertical, FenceIntersect, Free
 
 import random
 

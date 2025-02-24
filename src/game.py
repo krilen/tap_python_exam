@@ -1,8 +1,8 @@
-from .grid import Grid
-from .player import Player
-from .items import *
-from .menu import Menu
-from .steptimer import StepTimer
+from .grid.grid import Grid
+from .player.player import Player
+from .items.items import *
+from .menu.menu import Menu
+from .utils.steptimer import StepTimer
 
 
 # This is the setup of the board
