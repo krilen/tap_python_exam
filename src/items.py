@@ -1,6 +1,5 @@
 import inspect, sys
 
-
 class Item():
     def __init__(self):
         self.symbol = "?"
@@ -10,12 +9,12 @@ class Item():
         self.is_inventory = False # Save to the playes inventory
         self.name = "item"
         self.is_fence = False # Defined as a fence
+        self.is_bomb = False
+        self.can_be_destoyed = True
 
         
     def item_points(self):
         return self.points
-
-
 
 
 class BorderWall(Item):
@@ -24,6 +23,7 @@ class BorderWall(Item):
         super().__init__()
         self.symbol = "■"
         self.block = True
+        self.can_be_destoyed = False
 
 
 class Food(Item):
@@ -42,17 +42,22 @@ class Food(Item):
 
 
 class Free(Item):
-
+    """
+    Items that indicate on the board that is in no use
+    """
     def __init__(self):
         super().__init__()
         self.symbol = "."
-
         
+
 class Destroyed(Item):
-    
+    """
+    Item that indicate on the board that the tile is destroyed
+    """
     def __init__(self):
         super().__init__()
         self.symbol = ","
+        self.can_be_destoyed = False
 
 
 class Fence(Item):
@@ -62,14 +67,14 @@ class Fence(Item):
         self.cross = False
         self.is_fence = True
 
-        
+
 class FenceIntersect(Fence):
     
     def __init__(self):
         super().__init__()
         self.symbol = "+"
         self.is_fence = True
-
+        
 
 class FenceVertical(Fence):
     
@@ -78,34 +83,55 @@ class FenceVertical(Fence):
         self.symbol = "|"
         self.is_fence = True
         
-        
+
 class FenceHorizontal(Fence):
     
     def __init__(self):
         super().__init__()
         self.symbol = "-"
         self.is_fence = True
-
-
+        
 
 class Shovel(Item):
     
     def __init__(self):
         super().__init__()
-        self.symbol = "S"
+        #self.symbol = "S"
         self.name = "shovel"
         self.is_inventory = True
-    
-    
+
+
 class Bomb(Item):
+    ITEMS = ["dynamite", "c4", "nitroglycerin"]
+    
+    
+    def __init__(self, name=None):
+        super().__init__()
+        #self.symbol = "B"
+        self.name = name
+        self.is_inventory = True
+        self.is_bomb = True
+
+    @classmethod
+    def create(cls, name):
+        return cls(name)
+    
+    
+class SetBomb(Item):
     def __init__(self):
         super().__init__()
-        self.name = "bomb"
-        self.is_inventory = True
+        self.symbol = "¤"
+        
+        
+class PlayerHome(Item):
+    def __init__(self):
+        super().__init__()
+        self.symbol = "^"
+        self.name = "Home"
 
 
 
-# Get any items that can be used as inventory
+# Get any items that are inventory or fence
 def get_items():
     
     _get_item_classes = inspect.getmembers(sys.modules[__name__], inspect.isclass)

@@ -6,15 +6,17 @@ On monday look over the exam task to make sure that the default things are done
 
  Features
 ------------------------------------
+Done
  * Able to exit after a specified nr of steps 
     - Exit: ^
 
- * Enemy somes into play after a specified steps. Destoyes fences
+ * Enemy sumes into play after a specified steps. Destoyes fences
    but can be destoyed by a bomd. Move right towards you but rolls a dice
    where 1 and 2 (40%) will not be a movement
     - Its hone: #
     - Enemy itself: ¤
 
+Done
  * Add bombs that denoates after a few steps and destoys everything around.
    Will NOT affect the border. Place by 'b'.
    3 of them: Dynamite, C4 and Nitroglycerin
@@ -37,18 +39,25 @@ On monday look over the exam task to make sure that the default things are done
    are within 2 tiles of it the ground will change to _
    Mark lower left border wall with the color
 
- *
+Done
+ * Pickup should remove ! for duplicates, should never appear
 
+Done
+ * Kontrollera när , och används 'self.can_be_destoyed = False' istället
+
+ * Se över poänmg hanteringen
+
+ * Flytta upp fasta vaiabler högst upp, nue inventory, home, ...
 
  Redo
 ------------------------------------
  * Menu
- * Something strange about ! looks like they popup here and there
+ * Fixed - Something strange about ! looks like they popup here and there
 
 
  Coding done
 ------------------------------------
- * Test
+ * Testa
 
  * CleanUp
  * REVIEW, REVIEW AND REVIEW

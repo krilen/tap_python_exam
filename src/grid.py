@@ -1,15 +1,22 @@
-import random
+from .griditems import GridItems
+from .gridborder import GridBorder
+from .gridfences import GridFences
+
 from .items import *
+
+import random, sys
 from typing import Any
 
-class Grid:
-    """
-    Representerar spelplanen. Du kan ändra standardstorleken och tecknen för olika rutor.
-    """
+
+
+class Grid(GridItems, GridBorder, GridFences):
+
     def __init__(self, width, height):
         """
-        Skapa ett objekt av klassen Gridmax_size
+        Create an instance of Grid and also call GridFence and GridBorder
         """
+        super().__init__() 
+        
         self.width = width
         self.height = height
         self.items = []
@@ -21,7 +28,6 @@ class Grid:
                 
                 self.board.update({ (x, y): Free() })
 
-        
 
     # Displays the board with all its content
     def __str__(self):
@@ -31,6 +37,7 @@ class Grid:
         _board = ""
         
         for y in range(0, self.height):
+            _board += " "
             for x in range(0, self.width):
                 _item = self.board[(x, y)]
 
@@ -39,19 +46,17 @@ class Grid:
             _board += "\n"
         return _board
 
-
+    """
     # Adds the border wall that you can not get pass
     def add_border_walls(self):
-        """
-        Creates the border wall and the perimeter of the game
-        They can not be destoyed
-        """
+        #Creates the border wall and the perimeter of the game
+        #They can not be destoyed
         for tile in self.board:
             (_x, _y) = tile
             
             if _x == 0 or _y == 0  or _x == self.width -1 or _y == self.height -1:
                 self.board[tile] = BorderWall()
-
+    """
 
 
 
@@ -122,10 +127,6 @@ class Grid:
         return (from_pos[0] - to_pos[0]), (from_pos[1] - to_pos[1])
     
     
-    #def move(self, entity, )
-    
-
-        
     def move_position(self, entity, new_pos, _item=Free()):
         
         # First lets get what happended before on this tile
@@ -133,6 +134,15 @@ class Grid:
         _old_pos = saved_pos["pos"]
         _old_item = saved_pos["item"]
         
+        # Lets make sure that player are not at "Home" and want to exit the game
+        if isinstance(self.board[new_pos], PlayerHome):
+            print()
+            print(" > Player went home!")
+            print(" Thank you for playing!")
+            print()
+            
+            sys.exit(0)
+
         # Save what has happened on this tile before we move
         entity.add_old_pos(new_pos, _item)
         
@@ -141,7 +151,7 @@ class Grid:
         self.board[_old_pos] = _old_item
         self.board[new_pos] = _tmp_copy
         
-        
+    """
     def place_inventory(self, nr_to_place, inventory):
         
         inventory_keys = list({ k for (k, v) in inventory.items() })
@@ -173,21 +183,20 @@ class Grid:
             self.board[_free_pos] = item_cls
 
             _have_placed += 1
+    """            
                 
-                
-        
+    """
     def find_random_free(self, limit=0):
         
         _free_pos = list({k for (k, v) in self.board.items() if isinstance(v, Free)})
         return random.choice(_free_pos)
-        
-        
+    """
+    
+    """
     # Add fences to act as random walls
     def add_fences(self, nr_of_fences, min_size, max_size):
-        """
-        Creates fences within the perimeter of the game by random
-        They can be destoyed
-        """
+        #Creates fences within the perimeter of the game by random
+        #They can be destoyed
         r_fence = 0
         
         while r_fence < nr_of_fences:
@@ -239,15 +248,14 @@ class Grid:
                 self.board[f_pos] = f_type
             
             r_fence += 1
-
-
+    """
+    """
     # Find items of a certain type on the board
     def find_all_items(self, _class: type[Item]) -> list[tuple[int, int]]:
-        """
-        Find all the items of a certain type on the board (not instances)
-        """        
+        #Find all the items of a certain type on the board (not instances)
+        
         return list({k for (k, v) in self.board.items() if isinstance(v, _class)})
-    
+    """
     
     def check_walkthrough(self, p):
         """
