@@ -34,7 +34,7 @@ Done
  * Jump, pressing 'j' over a tile. During free steps jump over 2
    If you are blocked by a Wall you only jump as far as you can
 
- * Juvels, 3 of them, it you have them att home should appear
+ * Juvels, 3 of them, it you have them at home should appear
    They are hidden to find them you must have the shovel. If you
    are within 2 tiles of it the ground will change to _
    Mark lower left border wall with the color
@@ -45,9 +45,15 @@ Done
 Done
  * Kontrollera när , och används 'self.can_be_destoyed = False' istället
 
- * Se över poänmg hanteringen
+ * Se över poäng hanteringen
 
+Done
  * Flytta upp fasta vaiabler högst upp, nue inventory, home, ...
+
+ * FLytta ut Exit och spräng av sin bomb till till gameså det hanteras
+   tillsammasn med inventory etc
+
+
 
  Redo
 ------------------------------------

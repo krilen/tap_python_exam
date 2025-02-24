@@ -37,6 +37,8 @@ fence_names: list[str] = list({k for k in fences.keys()})
 command: str = ""
 message: str = ""
 jump_active: int = 0
+new_item = 25
+home_appears = 50
 
 # Steps
 steptimer = StepTimer()
@@ -148,12 +150,12 @@ while not command.casefold() in ["q", "x"]:
 
                 
                 # Place new inventory if possible
-                if player.steps % 2 == 0:
-                    grid.set_inventory(1, inventory, player.items)
+                if player.steps % new_item  == 0:
+                    grid.set_inventory(2, inventory, player.items)
                     
                     
                 # Set Home for player
-                if player.steps > 30 and player.steps % 10 == 0:
+                if player.steps > home_appears and player.steps % 30 == 0:
                     grid.place_player_home()
                 
                 

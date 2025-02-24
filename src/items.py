@@ -126,7 +126,7 @@ class SetBomb(Item):
 class PlayerHome(Item):
     def __init__(self):
         super().__init__()
-        self.symbol = "^"
+        self.symbol = "E"
         self.name = "Home"
 
 
