@@ -5,13 +5,21 @@ class Player():
     def __init__(self):
         super().__init__()
 
-        self.symbol: str = "@"    
+        self.symbol: str = "@"
         self.possible_moves: dict[ str: tuple[int, int]] = { "d": (1, 0), "a": (-1, 0), "w": (0, -1), "s": (0, 1) }
         self._items = []
         self._score: int = 0
         self._step_count: int = 0
         self._step_free: int = 0
         self._old_pos: dict = {}
+        self._starter_grid = (0, 0)
+
+
+    # Limit starter
+    @property
+    def limit_grid(self) -> list:
+        return self._starter_grid
+
 
     # Items
     @property

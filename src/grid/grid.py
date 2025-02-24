@@ -61,17 +61,25 @@ class Grid(GridItems, GridBorder, GridFences):
 
 
 
-    def add_player(self, p):
+    def add_entity(self, entity, limit: tuple[int, int]=(0, 0)):
         """
         Add the player to a random position somewhere in the middle of the board 
-        """    
+        """
+        
+        # Limit defines an area where the entity should randomly start
+        _start_pos_x_min = 1 + limit[0]
+        _start_pos_x_max = self.width - limit[0] -2
+        _start_pos_y_min = 1 + limit[1]
+        _start_pos_y_max = self.height - limit[1] -2
+        
+        
         while True:
-            _pos = (self.width // 2 + random.randint(-2, 2)), (self.height // 2 + random.randint(-1, 1))
+            _pos = random.randint(_start_pos_x_min, _start_pos_x_max), random.randint(_start_pos_y_min, _start_pos_y_max)
 
             if isinstance(self.board[_pos], Free):
                 
-                self.board[_pos] = p
-                p.add_old_pos(_pos, Free())
+                self.board[_pos] = entity
+                entity.add_old_pos(_pos, Free())
                 break
 
 

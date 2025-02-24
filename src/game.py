@@ -1,19 +1,26 @@
 from .grid.grid import Grid
-from .player.player import Player
+from .entity.player import Player
 from .items.items import *
 from .menu.menu import Menu
 from .utils.steptimer import StepTimer
+from .entity.enemy import Enemy
 
+
+grid_height = 12 # y
+grid_width = 36 # x
+
+# Player limit start position
+player_starter_limit: tuple[int, int] = (grid_width // 2 -3, grid_height // 2 -2)
 
 # This is the setup of the board
 # Loops until we find a board that is playable
 while True:
     
-    grid: type[Grid] = Grid(36, 12)
+    grid: type[Grid] = Grid(grid_width, grid_height)
     grid.add_border_walls()
 
     player: type[Player] = Player()
-    grid.add_player(player)
+    grid.add_entity(player, player_starter_limit)
     
     grid.add_fences(6, 3, 7) # nr of fences (can be merged), min size, max_size (without merge)
 
@@ -33,16 +40,22 @@ grid.set_inventory(4, inventory, [])
 # Fences
 fence_names: list[str] = list({k for k in fences.keys()})
 
+# Step Timer
+steptimer = StepTimer()
+steptimer_tmp = []
+
+# Enemy
+ememy = Enemy()
+
 # Start values
 command: str = ""
 message: str = ""
 jump_active: int = 0
-new_item = 25
-home_appears = 50
 
 # Steps
-steptimer = StepTimer()
-steptimer_tmp = []
+items_appears = 25
+home_appears = 50
+enemy_appears = 15
 
 # Loopa tills användaren trycker Q eller X.
 while not command.casefold() in ["q", "x"]:
@@ -150,7 +163,7 @@ while not command.casefold() in ["q", "x"]:
 
                 
                 # Place new inventory if possible
-                if player.steps % new_item  == 0:
+                if player.steps % items_appears  == 0:
                     grid.set_inventory(2, inventory, player.items)
                     
                     
@@ -161,6 +174,15 @@ while not command.casefold() in ["q", "x"]:
                 
                 # Move the player
                 grid.move_position(player, player_next_pos, _default_item)
+                
+                
+                # Enemy enters the board
+                if player.steps > enemy_appears and not grid.find_all_items(Enemy):
+                    grid.add_entity(ememy)
+                    message = " > Enemy has entered the board!"
+                    
+                    
+                    # HERE I AM enemy entered not it shuld move!!!
 
 
                 # Check the step timer
