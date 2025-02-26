@@ -64,6 +64,11 @@ Done
  * Message when death
  * Se över poäng hanteringen
 
+ Doublecheck
+------------------------------------
+ * Message when death
+ * Se över poäng hanteringen
+
 
  Redo
 ------------------------------------

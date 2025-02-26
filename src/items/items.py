@@ -114,7 +114,10 @@ class Bomb(Item):
         self.name = name
         self.is_inventory = True
         self.is_bomb = True
+<<<<<<< HEAD
         self.points = 20
+=======
+>>>>>>> refs/remotes/origin/main
         
 
     @classmethod
