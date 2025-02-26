@@ -58,7 +58,12 @@ class Destroyed(Item):
         super().__init__()
         self.symbol = ","
         self.can_be_destoyed = False
-
+        
+        
+class Killed(Destroyed):
+    def __init__(self):
+        super().__init__()
+        self.symbol = "X"
 
 class Fence(Item):
     def __init__(self):
@@ -96,7 +101,6 @@ class Shovel(Item):
     
     def __init__(self):
         super().__init__()
-        #self.symbol = "S"
         self.name = "shovel"
         self.is_inventory = True
 
@@ -107,10 +111,10 @@ class Bomb(Item):
     
     def __init__(self, name=None):
         super().__init__()
-        #self.symbol = "B"
         self.name = name
         self.is_inventory = True
         self.is_bomb = True
+        
 
     @classmethod
     def create(cls, name):

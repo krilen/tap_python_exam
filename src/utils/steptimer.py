@@ -36,7 +36,7 @@ class StepTimer():
     
     def check_steptimer(self, player_step):
         """
-        Method to fins out if someting needs to be done at this player step
+        Method to find out if someting needs to be done at this player step
         Basically used for a bomb to explode
         """
         _step_timers = self.steptimer_exec.get(player_step, None)

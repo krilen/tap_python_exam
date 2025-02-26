@@ -1,7 +1,4 @@
 from ..items.items import SetBomb, Destroyed
-from ..entity.player import Player
-import sys
-
 
 class GridBomb():
     
@@ -52,20 +49,23 @@ class GridBomb():
                 
                 if (0 <= _bomb_affected_pos[0] < self.width -1 and 
                      0 <= _bomb_affected_pos[1] < self.height -1):
+                   
+                    # Something may die                    
+                    try:
+                        _replace_item = self.board[_bomb_affected_pos].dies("bomb")
+                        
+                    except:
+                        game_continue = True
+                        message = ""
+                        replace_item = Destroyed()
+                        
+                    else:
+                        replace_item = _replace_item
                     
-                    # Player may die
-                    if isinstance(self.board[_bomb_affected_pos], Player):
-                        print()
-                        print(" > You died by your own bomb!")
-                        print(" Thank you for playing!")
-                        print()
-                        sys.exit(0)
-                    
-                    # Enemy might die
-                    elif 1 == 2:
-                        pass
-                    
-                    if self.board[_bomb_affected_pos].can_be_destoyed:
-                        self.board[_bomb_affected_pos] = Destroyed()
+                    finally:
+                        
+                        #if not game_continue and hasattr(self.board[_bomb_affected_pos], "alive"):
+                        #    self.board[_bomb_affected_pos].alive = (False, message)
 
-        
+                        if self.board[_bomb_affected_pos].can_be_destoyed:
+                            self.board[_bomb_affected_pos] = replace_item
