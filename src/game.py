@@ -3,8 +3,7 @@ from .entity.player import Player
 from .items.items import *
 from .menu.menu import Menu
 from .utils.steptimer import StepTimer
-from .entity.enemy import Enemy
-
+from .entity.monster import Monster
 
 grid_height = 12 # y
 grid_width = 36 # x
@@ -16,10 +15,10 @@ player_starter_limit: tuple[int, int] = (grid_width // 2 -3, grid_height // 2 -2
 # Loops until we find a board that is playable
 while True:
     
-    grid: type[Grid] = Grid(grid_width, grid_height)
+    grid: Grid = Grid(grid_width, grid_height)
     grid.add_border_walls()
 
-    player: type[Player] = Player()
+    player: Player = Player()
     grid.add_entity(player, player_starter_limit)
     
     grid.add_fences(6, 3, 7) # nr of fences (can be merged), min size, max_size (without merge)
@@ -35,7 +34,7 @@ fences = itemes["fence"]
 
 # Inventory
 inventory_names: list[str] = list({k for k in inventory.keys()})
-grid.set_inventory(4, inventory, [])
+grid.set_inventory(6, inventory, [])
 
 # Fences
 fence_names: list[str] = list({k for k in fences.keys()})
@@ -44,18 +43,19 @@ fence_names: list[str] = list({k for k in fences.keys()})
 steptimer = StepTimer()
 steptimer_tmp = []
 
-# Enemy
-ememy = Enemy()
+# Moster
+monster: Monster = Monster()
 
 # Start values
 command: str = ""
-message: str = ""
+messages: list[str] = []
 jump_active: int = 0
 
 # Steps
 items_appears = 25
+item_pickup_free_step = 5
 home_appears = 50
-enemy_appears = 15
+monster_appears = 60
 
 # Loopa tills användaren trycker Q eller X.
 while not command.casefold() in ["q", "x"]:
@@ -87,12 +87,16 @@ while not command.casefold() in ["q", "x"]:
                 # If the tile is blocked (Border Wall) '<item>.block = True' 
                 if grid.board[player_next_pos].block:
                     player_next_pos = player_prev_pos
-                    
                     player.remove_player_specific_items("shovel", Shovel)
 
                 # Tile is not crossable for the Player but Player has the shovel
                 elif not grid.board[player_next_pos].cross and "shovel" in player.inventory:
                     
+                    if isinstance(grid.board[player_next_pos], Monster):
+                        grid.board[player_next_pos] = monster.dies("shovel")
+                        
+                        monster_appears = player.steps + monster_appears // 2
+                        
                     if player_next_pos == player_movement[-1] or jump_active:
                         break
                     
@@ -121,18 +125,19 @@ while not command.casefold() in ["q", "x"]:
         
                 _default_item = Free() # The default new item tile when we pass over it
             
-                # A destoyed tile should remain destoyed
-                if isinstance(tile_next, Destroyed):
-                    _default_item = Destroyed()
+                # Chek if the tiles need to remain as something else
+                if isinstance(tile_next, Killed):
+                    _default_item = Killed()
                 
+                elif isinstance(tile_next, Destroyed):
+                    _default_item = Destroyed()
+                    
                 tile_class_name = (type(tile_next).__name__).lower()
                 
                 # Steps
                 player.steps = 1
                 del(player.score)
                 del(player.free_steps)
-                
-                
                 
                 # If the tile has something on it that we need to react to
                 if not isinstance(tile_next, Free):
@@ -142,24 +147,19 @@ while not command.casefold() in ["q", "x"]:
                         _default_item = Destroyed()
                     
                     # Perhaps we are able to pickup the item that is a tile
-                    # _add_item_status = player.add_player_items(tile_next)
                     message = player.add_player_items(tile_next)
                     
-                    if message != None:
-                        message = f" > Found: {message.title()}"
+                    if message!= None:
+                        messages.append( f" > Found: {message.title()}" )
                     
-                    # Mark the item as found but not placed in inventory
-                    #if not _add_item_status and tile_next.name in inventory_names:
-                    #    _default_item = tile_next # Reset the tile from default to the item
-                    #    _default_item.symbol = "!" # Marked it as already picked up <---- REMOVE 
-                    #    _default_item.points = 0 # Set the points for it to 0 the next time
-
+                    del(message)
+                    
                     # And any points from the tile
                     _item_points = tile_next.item_points()
                     
                     if _item_points > 0:
                          player.score = _item_points
-                         player.free_steps = 5
+                         player.free_steps = item_pickup_free_step
 
                 
                 # Place new inventory if possible
@@ -176,15 +176,39 @@ while not command.casefold() in ["q", "x"]:
                 grid.move_position(player, player_next_pos, _default_item)
                 
                 
-                # Enemy enters the board
-                if player.steps > enemy_appears and not grid.find_all_items(Enemy):
-                    grid.add_entity(ememy)
-                    message = " > Enemy has entered the board!"
+                # Monster moves                
+                moster_pos = grid.find_all_items(Monster)
+                monster_move = monster.should_move()
+                                           
+                if moster_pos and monster_move:
                     
+                    monster_player_diff = grid.path_diff(player_next_pos, moster_pos[0])
+                    monster_path = grid.get_path(monster, monster_player_diff)
                     
-                    # HERE I AM enemy entered not it shuld move!!!
+                    if len(monster_path) == 2:
+                        moster_next_pos = monster_path[1]
+                        
+                    else:
+                        moster_next_pos = monster_path[2]
 
+                    for monster_tile in monster_path[1:]:
+                        if monster_tile == moster_next_pos:
+                            break
+                        grid.board[monster_tile] = Destroyed()
 
+                    
+                    grid.move_position(monster, moster_next_pos, Destroyed())
+                    
+                    # Monster kills the player, game ends
+                    if moster_next_pos == player_next_pos:
+                        grid.board[player_next_pos] = player.dies("monster")
+                        
+        
+                # Monster enters the board
+                elif player.steps > monster_appears and not grid.find_all_items(Monster):
+                    grid.add_entity(monster)
+                    messages.append(" > The Monster has been seen!")
+                
                 # Check the step timer
                 for _steptime in steptimer_tmp:
                     _pos, _item = steptimer.add_to_steptimer(_steptime)
@@ -197,13 +221,13 @@ while not command.casefold() in ["q", "x"]:
             
         # Players inventory
         case "i":
-            message = player.get_player_inventory()
+            messages.append( player.get_player_inventory() )
             
             
         # Player jump
         case "j":
             jump_active = 1
-            message = " > Ready to jump!"
+            messages.append( " > Ready to jump!" )
 
 
         # Player eats food
@@ -212,32 +236,43 @@ while not command.casefold() in ["q", "x"]:
             
             if _removed_food != None:
                 player.free_steps = 10
-                message = f" > You eat the {_removed_food.name.title()}!"
+                messages.append( f" > You eat the {_removed_food.name.title()}!" )
                 
             else:
-                message = " > You have no food to eat!"
+                messages.append( " > You have no food to eat!" )
         
         
         # Player places a Bomb
         case "b":
-            _message, _add_bomb = grid.bomb_set(player)
+            message, _add_bomb = grid.bomb_set(player)
             
             if _add_bomb != None:
                 steptimer_tmp.append(_add_bomb)
                 
-                message = f" > {_message.upper()} have been placed, run!"
+                messages.append( f" > {message.upper()} have been placed, run!" )
 
             else:
-                message = f" > You do not have any bomb to use!"
+                messages.append( " > You do not have any bomb to use!" )
         
         
+            del(message)
         # Wrong key pressed do nothing
         case _:
             pass
         
+    if not player.alive[0]:
+        messages.append(player.alive[1])
+        
+    if not monster.alive[0]:
+        messages.append(monster.alive[1])
+        monster.alive = True, ""
+        
     m = Menu()
-    m.show(grid, message, player.score)
-    message = ""
+    m.show(grid, messages, player.score)
+    messages.clear()
+    
+    if not player.alive[0]:
+         break
     
     command = input(" Use WASD to move, Q/X to quit >> ").casefold()[:1]    
 

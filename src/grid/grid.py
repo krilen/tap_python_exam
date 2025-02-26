@@ -2,9 +2,10 @@ from .griditems import GridItems
 from .gridborder import GridBorder
 from .gridfences import GridFences
 
+from ..entity.player import Player
 from ..items.items import *
 
-import random, sys
+import random
 from typing import Any
 
 
@@ -46,20 +47,6 @@ class Grid(GridItems, GridBorder, GridFences):
             _board += "\n"
         return _board
 
-    """
-    # Adds the border wall that you can not get pass
-    def add_border_walls(self):
-        #Creates the border wall and the perimeter of the game
-        #They can not be destoyed
-        for tile in self.board:
-            (_x, _y) = tile
-            
-            if _x == 0 or _y == 0  or _x == self.width -1 or _y == self.height -1:
-                self.board[tile] = BorderWall()
-    """
-
-
-
 
     def add_entity(self, entity, limit: tuple[int, int]=(0, 0)):
         """
@@ -97,7 +84,7 @@ class Grid(GridItems, GridBorder, GridFences):
         _pos = self.find_all_items(type(entity))[0] # Only one player exists
         positions.append(_pos) 
         
-        _end_pos = _pos[0] + move[0], _pos[1] + move[1] # calculated en position
+        _end_pos = _pos[0] + move[0], _pos[1] + move[1] # calculatedd en position
         
         if 0 <= _end_pos[0] < self.width and 0 <= _end_pos[1] < self.height:
         
@@ -128,11 +115,11 @@ class Grid(GridItems, GridBorder, GridFences):
         return positions
     
     
-    def path_diff(self, from_pos: tuple[int, int], to_pos: tuple[int, int]) -> tuple[int, int]:
+    def path_diff(self, pos1: tuple[int, int], pos2: tuple[int, int]) -> tuple[int, int]:
         """
         Get the difference between to positions
         """
-        return (from_pos[0] - to_pos[0]), (from_pos[1] - to_pos[1])
+        return (pos1[0] - pos2[0]), (pos1[1] - pos2[1])
     
     
     def move_position(self, entity, new_pos, _item=Free()):
@@ -143,13 +130,8 @@ class Grid(GridItems, GridBorder, GridFences):
         _old_item = saved_pos["item"]
         
         # Lets make sure that player are not at "Home" and want to exit the game
-        if isinstance(self.board[new_pos], PlayerHome):
-            print()
-            print(" > Player went home!")
-            print(" Thank you for playing!")
-            print()
-            
-            sys.exit(0)
+        if isinstance(self.board[new_pos], PlayerHome) and isinstance(entity, Player):
+            entity.alive = (False, " > Player went home!")
 
         # Save what has happened on this tile before we move
         entity.add_old_pos(new_pos, _item)
@@ -159,111 +141,6 @@ class Grid(GridItems, GridBorder, GridFences):
         self.board[_old_pos] = _old_item
         self.board[new_pos] = _tmp_copy
         
-    """
-    def place_inventory(self, nr_to_place, inventory):
-        
-        inventory_keys = list({ k for (k, v) in inventory.items() })
-
-        _have_placed = 0
-        _tries = 0
-            
-        # To make sure that we only place unique items, no dublicates on the board
-        while _have_placed < nr_to_place and _tries < len(inventory_keys):
-            item_place = random.choice(inventory_keys)
-            item_cls = inventory[item_place]
-
-            _items_found = self.find_all_items(type(item_cls))
-            _ok_to_place = True
-            
-            _tries += 1
-
-            # Item exists but does a "sub item" exist?
-            if _items_found:
-                for _item_found in _items_found:
-                    if item_place == self.board[_item_found].name:
-                        _ok_to_place = False
-                        break
-             
-            if not _ok_to_place:
-                continue
-
-            _free_pos = self.find_random_free()
-            self.board[_free_pos] = item_cls
-
-            _have_placed += 1
-    """            
-                
-    """
-    def find_random_free(self, limit=0):
-        
-        _free_pos = list({k for (k, v) in self.board.items() if isinstance(v, Free)})
-        return random.choice(_free_pos)
-    """
-    
-    """
-    # Add fences to act as random walls
-    def add_fences(self, nr_of_fences, min_size, max_size):
-        #Creates fences within the perimeter of the game by random
-        #They can be destoyed
-        r_fence = 0
-        
-        while r_fence < nr_of_fences:
-            _fence_types = {(0, 1): FenceVertical, (0, -1): FenceVertical, (1, 0): FenceHorizontal, (-1, 0): FenceHorizontal}
-            _fence_align = random.choice([(0, 1), (0, -1), (1, 0), (-1, 0)])
-            _fence_pos = random.randint(min_size, self.width -1), random.randint(min_size, self.height -1)
-            _fence_size = random.randint(min_size, max_size)
-            
-            if _fence_align in [(1, 0), (-1, 0)]:
-                _fence_size *= 2
-            
-            _fence_ok = True
-            fence = []
-            
-            for _ in range(1, _fence_size +1):
-                _fence_pos_x = _fence_pos[0] + _fence_align[0]
-                _fence_pos_y = _fence_pos[1] + _fence_align[1]
-
-                if not 0 < _fence_pos_x < self.width -1 or not 0 < _fence_pos_y < self.height -1:
-                    _fence_ok = False
-                    break
-                
-                _fence_pos = _fence_pos_x, _fence_pos_y
-                _tile_item = self.board[_fence_pos]
-                
-                # Add a fench to a free tile or keep building a fench in the same direction
-                if ((isinstance(_tile_item, Free)) or 
-                    (isinstance(_tile_item, FenceHorizontal) and _fence_align in [(1, 0), (-1, 0)]) or 
-                    (isinstance(_tile_item, FenceVertical) and _fence_align in [(0, 1), (0, -1)])):
-                    fence.append({_fence_pos: _fence_types[_fence_align]()})
-                    
-                elif ((isinstance(_tile_item, FenceHorizontal) and _fence_align not in [(1, 0), (-1, 0)]) or 
-                      (isinstance(_tile_item, FenceVertical) and _fence_align not in [(0, 1), (0, -1)])):
-                    fence.append({_fence_pos: FenceIntersect()})
-                    
-                else:
-                    _fence_ok = False
-                    break
-            
-            # If something went wrong when building the fence lets restart
-            if not _fence_ok:
-                continue
-            
-            # Add fench to the grid
-            for f in fence:
-                f_pos = list(f.keys())[0]
-                f_type = list(f.values())[0]
-                
-                self.board[f_pos] = f_type
-            
-            r_fence += 1
-    """
-    """
-    # Find items of a certain type on the board
-    def find_all_items(self, _class: type[Item]) -> list[tuple[int, int]]:
-        #Find all the items of a certain type on the board (not instances)
-        
-        return list({k for (k, v) in self.board.items() if isinstance(v, _class)})
-    """
     
     def check_walkthrough(self, p):
         """

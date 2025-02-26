@@ -10,6 +10,7 @@ Done
  * Able to exit after a specified nr of steps 
     - Exit: ^
 
+Done
  * Enemy sumes into play after a specified steps. Destoyes fences
    but can be destoyed by a bomd. Move right towards you but rolls a dice
    where 1 and 2 (40%) will not be a movement
@@ -45,14 +46,23 @@ Done
 Done
  * Kontrollera när , och används 'self.can_be_destoyed = False' istället
 
- * Se över poäng hanteringen
+
 
 Done
  * Flytta upp fasta vaiabler högst upp, nue inventory, home, ...
 
+Done
  * FLytta ut Exit och spräng av sin bomb till till gameså det hanteras
    tillsammasn med inventory etc
+   Gäller också monster
 
+ * Monster får inte gå genom bomb!
+
+
+ Doublecheck
+------------------------------------
+ * Message when death
+ * Se över poäng hanteringen
 
 
  Redo

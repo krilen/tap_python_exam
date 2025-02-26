@@ -1,4 +1,4 @@
-
+from ..items.items import Killed
 
 class Player():
 
@@ -13,6 +13,8 @@ class Player():
         self._step_free: int = 0
         self._old_pos: dict = {}
         self._starter_grid = (0, 0)
+        self.can_be_destoyed = True
+        self.alive = (True, "")
 
 
     # Limit starter
@@ -135,7 +137,8 @@ class Player():
 
         else:
             return None
-            
+
+
     def get_player_inventory(self):
         
         s_inventory = " Inventory:\n"
@@ -150,3 +153,18 @@ class Player():
             
         return s_inventory
     
+
+    def dies(self, reason):
+        
+        if reason == "bomb":
+            message = " > Player was killed by a Bomb!"
+            
+        elif reason == "monster":
+            message = " > Player was killed by the Monster!"
+            
+        else:
+            message = " > Player was killed by something!"
+            
+        self.alive = False, message
+            
+        return Killed()
