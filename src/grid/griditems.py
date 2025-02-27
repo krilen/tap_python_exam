@@ -1,4 +1,4 @@
-from ..items.items import *
+from ..items.items import PlayerExit, Item, Free
 from .gridbomb import GridBomb
 
 import random
@@ -60,9 +60,8 @@ class GridItems(GridBomb):
         return random.choice(_free_pos)
     
     
-    def place_player_home(self):
+    def place_player_exit(self):
         """
-        Place the home/exit for the player
+        Place the exit for the player
         """
-        if not self.find_all_items(PlayerHome):
-            self.board[self.find_random_free()] = PlayerHome()
+        self.board[self.find_random_free()] = PlayerExit()

@@ -74,7 +74,7 @@ Done
 
  Redo
 ------------------------------------
- * Menu
+ * Menu - Good enough
  * Fixed - Something strange about ! looks like they popup here and there
 
 
@@ -82,6 +82,6 @@ Done
 ------------------------------------
  * Testa
 
- * CleanUp
+ * CleanUp - started to....
  * REVIEW, REVIEW AND REVIEW
  * Test again

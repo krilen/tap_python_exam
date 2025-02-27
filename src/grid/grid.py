@@ -3,7 +3,7 @@ from .gridborder import GridBorder
 from .gridfences import GridFences
 
 from ..entity.player import Player
-from ..items.items import *
+from ..items.items import Item, Free, PlayerExit, FenceHorizontal, FenceVertical, FenceIntersect, Fence, BorderWall
 
 import random
 from typing import Any
@@ -129,8 +129,8 @@ class Grid(GridItems, GridBorder, GridFences):
         _old_pos = saved_pos["pos"]
         _old_item = saved_pos["item"]
         
-        # Lets make sure that player are not at "Home" and want to exit the game
-        if isinstance(self.board[new_pos], PlayerHome) and isinstance(entity, Player):
+        # Lets make sure that player are not at "Exit" and want to exit the game
+        if isinstance(self.board[new_pos], PlayerExit) and isinstance(entity, Player):
             entity.alive = (False, " > Player went home!")
 
         # Save what has happened on this tile before we move

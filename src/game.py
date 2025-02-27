@@ -1,6 +1,6 @@
 from .grid.grid import Grid
 from .entity.player import Player
-from .items.items import *
+from .items.items import get_items, PlayerExit, Food
 from .menu.menu import Menu
 from .utils.steptimer import StepTimer
 from .entity.monster import Monster
@@ -43,18 +43,18 @@ fence_names: list[str] = list({k for k in fences.keys()})
 steptimer = StepTimer()
 steptimer_tmp = []
 
-# Moster
+# Monster
 monster: Monster = Monster()
 
 # Start values
 command: str = ""
 messages: list[str] = []
 jump_active: int = 0
+jump_active = False
 
 # Steps
 items_appears = 25
-item_pickup_free_step = 5
-home_appears = 50
+exit_appears = 50
 monster_appears = 60
 
 # Loopa tills användaren trycker Q eller X.
@@ -74,13 +74,17 @@ while not command.casefold() in ["q", "x"]:
             
             if jump_active:
                 player_move = player_move[0] *2, player_move[1] *2
-            
+
+            player_next_pos, player_current_pos = player.next_move(grid, player_move, jump_active, monster)
+
+            """
             player_movement: list[tuple[int, int]] = grid.get_path(player, player_move)
             player_current_pos = player_movement[0]
             
-            # Find out how far it is possible to move the player
             player_next_pos = player_current_pos
             player_prev_pos = player_current_pos
+
+            
             
             for player_next_pos in player_movement[1:]:
                 
@@ -113,24 +117,53 @@ while not command.casefold() in ["q", "x"]:
                     continue
         
                 break
+            """
+                
+            jump_active = False
             
-            jump_active = 0
-            
-
-            # Only if the player have moved
             if player_current_pos != player_next_pos:
+
+                # Player actions
+                messages.append( player.action( grid, player_next_pos, fence_names ))
+
+                # Monster action
+                monster_pos = grid.find_all_items(Monster)
+                monster_move = monster.should_move()
+                                           
+                if monster_pos and monster_move:
+                    monster.action( grid, monster_pos, player, player_next_pos )
+
+                elif player.steps > monster_appears and not grid.find_all_items(Monster):
+                    grid.add_entity(monster)
+                    messages.append(" > The Monster has been seen!")
+
+
+                # Other actions
+
+                if player.steps % items_appears == 0:
+                    grid.set_inventory(2, inventory, player.items)
+
+                # Check the step timer
+                for _steptime in steptimer_tmp:
+                    _pos, _item = steptimer.add_to_steptimer(_steptime)
+                    grid.board[_pos] = _item
+                    
+                steptimer_tmp.clear()
                 
-                tile_current = grid.board[player_current_pos]
-                tile_next = grid.board[player_next_pos]
+                steptimer.check_steptimer(player.steps)
+
+                """
+                #tile_current = grid.board[player_current_pos]
+                player_tile = grid.board[player_next_pos]
         
-                _default_item = Free() # The default new item tile when we pass over it
+                replace_item = Free()
             
-                # Chek if the tiles need to remain as something else
-                if isinstance(tile_next, Killed):
-                    _default_item = Killed()
+                # Check if the tiles need to remain as something else
+                if isinstance(player_tile, Killed):
+                    replace_item = Killed()
                 
-                elif isinstance(tile_next, Destroyed):
-                    _default_item = Destroyed()
+                elif isinstance(player_tile, Destroyed):
+                    replace_itemm = Destroyed()
 
                 # Steps
                 player.steps = 1
@@ -138,16 +171,13 @@ while not command.casefold() in ["q", "x"]:
                 del(player.free_steps)
                 
                 # If the tile has something on it that we need to react to
-                if not isinstance(tile_next, Free):
+                if not isinstance(player_tile, Free):
                         
-                    # If the tile is a fence that we can break it and leave some destruction
-                    tile_class_name = (type(tile_next).__name__).lower()
-
-                    if tile_class_name in fence_names:
-                        _default_item = Destroyed()
+                    if (type(player_tile).__name__).lower() in fence_names:
+                        replace_item = Destroyed()
                     
                     # Perhaps we are able to pickup the item that is a tile
-                    message = player.add_player_items(tile_next)
+                    message = player.add_player_items(player_tile)
                     
                     if message!= None:
                         messages.append( f" > Found: {message.title()}" )
@@ -155,7 +185,7 @@ while not command.casefold() in ["q", "x"]:
                     del(message)
                     
                     # And any points from the tile
-                    _item_points = tile_next.item_points()
+                    _item_points = player_tile.item_points()
                     
                     if _item_points > 0:
                          player.score = _item_points
@@ -168,13 +198,16 @@ while not command.casefold() in ["q", "x"]:
                     
                     
                 # Move the player
-                grid.move_position(player, player_next_pos, _default_item)
+                grid.move_position(player, player_next_pos, replace_item)
 
                 # If player stepped on the bomb
-                if isinstance(tile_next, SetBomb):
+                if isinstance(player_tile, SetBomb):
                     grid.bomb_detonate(player_next_pos, grid.board[player_next_pos])
                 
                 
+
+
+
                 # Monster moves                
                 monster_pos = grid.find_all_items(Monster)
                 monster_move = monster.should_move()
@@ -220,15 +253,8 @@ while not command.casefold() in ["q", "x"]:
                 elif player.steps > monster_appears and not grid.find_all_items(Monster):
                     grid.add_entity(monster)
                     messages.append(" > The Monster has been seen!")
+                """
 
-                # Check the step timer
-                for _steptime in steptimer_tmp:
-                    _pos, _item = steptimer.add_to_steptimer(_steptime)
-                    grid.board[_pos] = _item
-                    
-                steptimer_tmp.clear()
-                
-                steptimer.check_steptimer(player.steps)
 
             
         # Players inventory
@@ -238,7 +264,7 @@ while not command.casefold() in ["q", "x"]:
             
         # Player jump
         case "j":
-            jump_active = 1
+            jump_active = True
             messages.append( " > Ready to jump!" )
 
 
@@ -268,34 +294,36 @@ while not command.casefold() in ["q", "x"]:
         
         
             del(message)
-        # Wrong key pressed do nothing
+
         case _:
             pass
 
-    # Set Home for player
-    if player.steps > home_appears and player.steps % 30 == 0:
-        grid.place_player_home()    
+    # Add Exit for Player
+    if player.steps > exit_appears and not grid.find_all_items(PlayerExit) and player.alive[0]:
+        grid.place_player_exit()
+        messages.append(" > Players Exit has appeared!")  
         
+    # If the Player has died prepair the game to end
     if not player.alive[0]:
         messages.append(player.alive[1])
         
+    # If the Monster has died it will be spawn in the future
     if not monster.alive[0]:
         player.score = monster.points
         messages.append(monster.alive[1])
         monster.alive = True, ""
-        #del(monster)
-        #monster = Monster()
-        monster_appears = player.steps + monster_appears
-        
+        monster_appears = player.steps + monster_appears // 2
+    
+    # Display
     m = Menu()
     m.show(grid, messages, player.score)
     messages.clear()
-    
+   
+    # End game if Player has died
     if not player.alive[0]:
          break
     
     command = input(" Use WASD to move, Q/X to quit >> ").casefold()[:1]    
 
-# Hit kommer vi när while-loopen slutar
 print(" Thank you for playing!")
 print()

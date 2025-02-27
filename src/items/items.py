@@ -128,11 +128,11 @@ class SetBomb(Item):
         self.symbol = "¤"
         
         
-class PlayerHome(Item):
+class PlayerExit(Item):
     def __init__(self):
         super().__init__()
         self.symbol = "E"
-        self.name = "Home"
+        self.name = "Exit"
 
 
 
