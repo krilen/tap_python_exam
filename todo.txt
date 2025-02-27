@@ -35,6 +35,7 @@ Done
  * Jump, pressing 'j' over a tile. During free steps jump over 2
    If you are blocked by a Wall you only jump as far as you can
 
+SKIP
  * Juvels, 3 of them, it you have them at home should appear
    They are hidden to find them you must have the shovel. If you
    are within 2 tiles of it the ground will change to _

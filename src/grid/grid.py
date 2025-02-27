@@ -3,6 +3,7 @@ from .gridborder import GridBorder
 from .gridfences import GridFences
 
 from ..entity.player import Player
+from ..entity.monster import Monster
 from ..items.items import Item, Free, PlayerExit, FenceHorizontal, FenceVertical, FenceIntersect, Fence, BorderWall
 
 import random
@@ -11,8 +12,11 @@ from typing import Any
 
 
 class Grid(GridItems, GridBorder, GridFences):
+    """
+    A class to handel the grid (board of items)
+    """
 
-    def __init__(self, width, height):
+    def __init__(self, width: int, height: int) -> None:
         """
         Create an instance of Grid and also call GridFence and GridBorder
         """
@@ -31,9 +35,9 @@ class Grid(GridItems, GridBorder, GridFences):
 
 
     # Displays the board with all its content
-    def __str__(self):
+    def __str__(self) -> str:
         """
-        Displays the board and its contents
+        Returns the board as a string
         """
         _board = ""
         
@@ -48,7 +52,7 @@ class Grid(GridItems, GridBorder, GridFences):
         return _board
 
 
-    def add_entity(self, entity, limit: tuple[int, int]=(0, 0)):
+    def add_entity(self, entity: Player | Monster, limit: tuple[int, int]=(0, 0)) -> None:
         """
         Add the player to a random position somewhere in the middle of the board 
         """
@@ -70,7 +74,7 @@ class Grid(GridItems, GridBorder, GridFences):
                 break
 
 
-    def get_path(self, entity: type[Any], move: tuple[int, int]) -> list[tuple[int, int]]:
+    def get_path(self, entity: Player | Monster, move: tuple[int, int]) -> list[tuple[int, int]]:
         """
         A method that calculates the path from a position using a move (not end_pos)
         
@@ -84,7 +88,7 @@ class Grid(GridItems, GridBorder, GridFences):
         _pos = self.find_all_items(type(entity))[0] # Only one player exists
         positions.append(_pos) 
         
-        _end_pos = _pos[0] + move[0], _pos[1] + move[1] # calculatedd en position
+        _end_pos = _pos[0] + move[0], _pos[1] + move[1] # calculate the end position
         
         if 0 <= _end_pos[0] < self.width and 0 <= _end_pos[1] < self.height:
         
@@ -122,8 +126,10 @@ class Grid(GridItems, GridBorder, GridFences):
         return (pos1[0] - pos2[0]), (pos1[1] - pos2[1])
     
     
-    def move_position(self, entity, new_pos, _item=Free()):
-        
+    def move_position(self, entity: Player | Monster, new_pos: tuple[int, int], item: Item =Free()) -> None:
+        """
+        Method that moves items that moves (Player, Monsters)
+        """
         # First lets get what happended before on this tile
         saved_pos = entity.old_pos
         _old_pos = saved_pos["pos"]
@@ -131,10 +137,10 @@ class Grid(GridItems, GridBorder, GridFences):
         
         # Lets make sure that player are not at "Exit" and want to exit the game
         if isinstance(self.board[new_pos], PlayerExit) and isinstance(entity, Player):
-            entity.alive = (False, " > Player went home!")
+            entity.alive = (False, " > Player Exited!")
 
         # Save what has happened on this tile before we move
-        entity.add_old_pos(new_pos, _item)
+        entity.add_old_pos(new_pos, item)
         
         # Lets write the changes to the board
         _tmp_copy = self.board[_old_pos]
@@ -142,7 +148,7 @@ class Grid(GridItems, GridBorder, GridFences):
         self.board[new_pos] = _tmp_copy
         
     
-    def check_walkthrough(self, p):
+    def check_walkthrough(self, p: Player) -> bool:
         """
         Verifying that you can reach all tiles on the board.
         Except border walls and fences
@@ -153,11 +159,10 @@ class Grid(GridItems, GridBorder, GridFences):
         
         _items_not_to_check: tuple[type[Item]] = (FenceHorizontal, FenceVertical, FenceIntersect, Fence, BorderWall)
         
-        moves = [(1, 0), (-1, 0), (0, -1), (0, 1)] # Allowed movements
+        moves = [(1, 0), (-1, 0), (0, -1), (0, 1)] # Allowed movements by the player
                            
         # Positions to be checked
         while to_check_pos:
-            # The current pos to be checked
             check_pos = to_check_pos.pop(0)
             
             for move in moves:
@@ -168,7 +173,7 @@ class Grid(GridItems, GridBorder, GridFences):
                 
                 # Make sure that the next_pos has not been checked or about to be checked
                 if _pos_next not in checked_pos and _pos_next not in to_check_pos:
-                    # Make sure that the pos is not a border or fence
+                    # Make sure that the pos is not a border or a fence
                     if not isinstance(self.board[_pos_next], _items_not_to_check):
                         to_check_pos.append(_pos_next)
                         

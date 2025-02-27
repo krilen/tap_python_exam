@@ -64,23 +64,28 @@ class Monster(Item):
             
         else:
             monster_next_pos = monster_path[2]
+            
+        print(monster_path)
 
         # For the path of the moster
-        for monster_tile in monster_path[1:]:
-            if monster_tile == monster_next_pos:
+        for monster_pos in monster_path[1:]:
+            if monster_pos == monster_next_pos:
                 break
 
-            if isinstance(g.board[monster_tile], SetBomb):
-                g.bomb_detonate(monster_tile, g.board[monster_tile])
-            else:
-                g.board[monster_tile] = Destroyed()
+            if isinstance(g.board[monster_pos], SetBomb):
+                g.move_position(self, monster_pos, Destroyed())
+                g.bomb_detonate(monster_pos, g.board[monster_pos])
 
-        # End position
-        if isinstance(g.board[monster_tile], SetBomb):
-            g.move_position(self, monster_next_pos, Destroyed())    
-            g.bomb_detonate(monster_tile, g.board[monster_tile])
-        else:
-            g.move_position(self, monster_next_pos, Destroyed())
+            else:
+                g.board[monster_pos] = Destroyed()
+
+        if self.alive[0]:
+            if isinstance(g.board[monster_pos], SetBomb):
+                g.move_position(self, monster_next_pos, Destroyed())
+                g.bomb_detonate(monster_pos, g.board[monster_pos])
+            
+            else:
+                g.move_position(self, monster_next_pos, Destroyed())
         
 
         # Monster kills the player, game ends

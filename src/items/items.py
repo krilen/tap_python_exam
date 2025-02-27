@@ -112,6 +112,7 @@ class Bomb(Item):
     def __init__(self, name=None):
         super().__init__()
         self.name = name
+        self.symbol = "B"
         self.is_inventory = True
         self.is_bomb = True
         self.points = 20

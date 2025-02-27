@@ -166,18 +166,16 @@ class Player():
         
         for player_next_pos in player_movement[1:]:
             
-            # If the tile is blocked (Border Wall) '<item>.block = True' 
+            # If the item is blocked (Border Wall) '<item>.block = True' 
             if g.board[player_next_pos].block:
                 player_next_pos = player_prev_pos
                 self.remove_player_specific_items("shovel", Shovel)
 
-            # Tile is not crossable for the Player but Player has the shovel
+            # Item is not crossable for the Player but Player has the shovel
             elif not g.board[player_next_pos].cross and "shovel" in self.inventory:
                 
                 if isinstance(g.board[player_next_pos], type(m)):
                     g.board[player_next_pos] = m.dies("shovel")
-                    
-                    #monster_appears = self.steps + monster_appears // 2
                     
                 if player_next_pos == player_movement[-1] or jump:
                     break
@@ -186,7 +184,7 @@ class Player():
                     player_prev_pos = player_next_pos
                     continue
             
-            # Tile is not crossable for Player (Fence) '<item>.cross = False' 
+            # Item is not crossable for Player (Fence) '<item>.cross = False' 
             elif not g.board[player_next_pos].cross:
                 player_next_pos = player_prev_pos
 
@@ -239,13 +237,12 @@ class Player():
                     self.score = item_points
                     self.free_steps = 5
 
-            
         # Move the player
         g.move_position(self, next_pos, replace_item)
 
         # If player stepped on the bomb
         if isinstance(player_tile, SetBomb):
-            g.bomb_detonate(next_pos, player_tile)
+            g.bomb_detonate(next_pos, g.board[next_pos])
 
         return player_message
     
