@@ -131,9 +131,7 @@ while not command.casefold() in ["q", "x"]:
                 
                 elif isinstance(tile_next, Destroyed):
                     _default_item = Destroyed()
-                    
-                tile_class_name = (type(tile_next).__name__).lower()
-                
+
                 # Steps
                 player.steps = 1
                 del(player.score)
@@ -143,6 +141,8 @@ while not command.casefold() in ["q", "x"]:
                 if not isinstance(tile_next, Free):
                         
                     # If the tile is a fence that we can break it and leave some destruction
+                    tile_class_name = (type(tile_next).__name__).lower()
+
                     if tile_class_name in fence_names:
                         _default_item = Destroyed()
                     
@@ -167,22 +167,21 @@ while not command.casefold() in ["q", "x"]:
                     grid.set_inventory(2, inventory, player.items)
                     
                     
-                # Set Home for player
-                if player.steps > home_appears and player.steps % 30 == 0:
-                    grid.place_player_home()
-                
-                
                 # Move the player
                 grid.move_position(player, player_next_pos, _default_item)
+
+                # If player stepped on the bomb
+                if isinstance(tile_next, SetBomb):
+                    grid.bomb_detonate(player_next_pos, grid.board[player_next_pos])
                 
                 
                 # Monster moves                
-                moster_pos = grid.find_all_items(Monster)
+                monster_pos = grid.find_all_items(Monster)
                 monster_move = monster.should_move()
                                            
-                if moster_pos and monster_move:
+                if monster_pos and monster_move:
                     
-                    monster_player_diff = grid.path_diff(player_next_pos, moster_pos[0])
+                    monster_player_diff = grid.path_diff(player_next_pos, monster_pos[0])
                     monster_path = grid.get_path(monster, monster_player_diff)
                     
                     if len(monster_path) == 2:
@@ -191,24 +190,37 @@ while not command.casefold() in ["q", "x"]:
                     else:
                         moster_next_pos = monster_path[2]
 
+                    # For the path of the moster
                     for monster_tile in monster_path[1:]:
                         if monster_tile == moster_next_pos:
                             break
-                        grid.board[monster_tile] = Destroyed()
 
-                    
-                    grid.move_position(monster, moster_next_pos, Destroyed())
+                        if isinstance(grid.board[monster_tile], SetBomb):
+                            grid.bomb_detonate(monster_tile, grid.board[monster_tile])
+                        else:
+                            grid.board[monster_tile] = Destroyed()
+
+                    # End pos
+                    if isinstance(grid.board[monster_tile], SetBomb):
+                        grid.move_position(monster, moster_next_pos, Destroyed())    
+                        grid.bomb_detonate(monster_tile, grid.board[monster_tile])
+                    else:
+                        grid.move_position(monster, moster_next_pos, Destroyed())
                     
                     # Monster kills the player, game ends
                     if moster_next_pos == player_next_pos:
                         grid.board[player_next_pos] = player.dies("monster")
+
+                    # If player stepped on the bomb
+                    if isinstance(moster_next_pos, SetBomb):
+                        grid.bomb_detonate(moster_next_pos, grid.board[moster_next_pos])
                         
         
                 # Monster enters the board
                 elif player.steps > monster_appears and not grid.find_all_items(Monster):
                     grid.add_entity(monster)
                     messages.append(" > The Monster has been seen!")
-                
+
                 # Check the step timer
                 for _steptime in steptimer_tmp:
                     _pos, _item = steptimer.add_to_steptimer(_steptime)
@@ -259,13 +271,21 @@ while not command.casefold() in ["q", "x"]:
         # Wrong key pressed do nothing
         case _:
             pass
+
+    # Set Home for player
+    if player.steps > home_appears and player.steps % 30 == 0:
+        grid.place_player_home()    
         
     if not player.alive[0]:
         messages.append(player.alive[1])
         
     if not monster.alive[0]:
+        player.score = monster.points
         messages.append(monster.alive[1])
         monster.alive = True, ""
+        #del(monster)
+        #monster = Monster()
+        monster_appears = player.steps + monster_appears
         
     m = Menu()
     m.show(grid, messages, player.score)

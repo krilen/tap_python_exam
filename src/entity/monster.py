@@ -1,4 +1,6 @@
 from ..items.items import *
+
+
 import random
 
 class Monster(Item):
@@ -8,7 +10,7 @@ class Monster(Item):
         
         self._old_pos: dict = {}
         self.symbol: str = "#"
-        self.points = 300
+        self.points = 100
         self.cross = False
         self.possible_moves: list[tuple[int, int]] = [(2, 0), (-2, 0), (0, -2), (0, 2)]
         self.move_rate = 1
@@ -35,6 +37,9 @@ class Monster(Item):
             
         elif reason == "bomb":
             message = " > Player killed the Monster with a Bomb!"
+
+        elif reason == "steponbomb":
+            message = " > Monster stepped on the Bomb and was killed!"
             
         else:
             message = " > Monster was killed!"

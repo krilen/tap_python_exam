@@ -56,12 +56,14 @@ Done
    tillsammasn med inventory etc
    Gäller också monster
 
+Done
  * Monster får inte gå genom bomb!
+   Om player eller monster går på bomd exploderar den
 
 
  Doublecheck
 ------------------------------------
- * Message when death
+ * Message when death - Done
  * Se över poäng hanteringen
 
  Doublecheck

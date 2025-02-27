@@ -161,6 +161,9 @@ class Player():
             
         elif reason == "monster":
             message = " > Player was killed by the Monster!"
+
+        elif reason == "steponbomb":
+            message = " > Player stepped on the Bomb and was killed!"
             
         else:
             message = " > Player was killed by something!"

@@ -52,12 +52,14 @@ class GridBomb():
                    
                     # Something may die                    
                     try:
-                        _replace_item = self.board[_bomb_affected_pos].dies("bomb")
+                        if _bomb_affected_pos == bomb_pos:
+                            _replace_item = self.board[_bomb_affected_pos].dies("steponbomb")
+                        else:
+                            _replace_item = self.board[_bomb_affected_pos].dies("bomb")
                         
                     except:
-                        game_continue = True
-                        message = ""
                         replace_item = Destroyed()
+
                         
                     else:
                         replace_item = _replace_item
