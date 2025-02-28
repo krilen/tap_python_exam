@@ -45,13 +45,14 @@ Starta spelet genom 'python -m src.game'
 - s: Riktning nedåt
 - a: Riktning vänster
 - d: Riktning höger
-- j: Hoppa
+- j: Aktivera för att hppa nästa riktning
 
 **Övriga knappar**
 
 - i: "Inventory" saker som har plockats upp av spelaren
 - e: Äta mat som plockats upp
 - b: Placera en bomb där spelaren står
+- q, x: Avsluta spelet
 
 ### Poäng
 
