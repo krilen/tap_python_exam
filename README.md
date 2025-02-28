@@ -22,7 +22,7 @@ Exam uppgift: https://docs.google.com/document/d/1GhqbgG9YW5cOiR0LLWmMTc-s-VmQud
 
 ## Noteringar om spelet
 
-Min version av spelat går ut att samla poäng.
+Min version av spelat går ut att samla poäng.  
 Starta spelet genom 'python -m src.game'
 
 ### Förklaringar
