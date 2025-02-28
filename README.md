@@ -62,43 +62,10 @@ Starta spelet genom 'python -m src.game'
   - Efter en sak har plockats upp ges 5 gratis steg.
   - Om spelaren äter mat ges 10 gratis steg
 
-# Att navigera
-
-Genom att navigera med navigeringknaparna och <enter> så rör man spelare inom spelområdet. dig
-
-- E: Exit
-- ,: Jord som har förstörts (ett komma)
-- X: Moster eller spelare som har dött
-- ¤: Placerad bomb
-
-**Navigeringsknappar**
-
-- w: Riktning uppåt
-- s: Riktning nedåt
-- a: Riktning vänster
-- d: Riktning höger
-- j: Hoppa
-
-**Övriga knappar**
-
-- i: "Inventory" saker som har plockats upp av spelaren
-- e: Äta mat som plockats upp
-- b: Placera en bomb där spelaren står
-
-### Poäng
-
-- Samla saker 20 poäng
-- Döda monstret 100 poäng
-- Gå runt på spelplanen -1 poäng
-  Dock
-  - Efter en sak har plockats upp ges 5 gratis steg.
-  - Om spelaren äter mat ges 10 gratis steg
-
 ### Att navigera
 
 Genom att navigera med navigeringknaparna och <enter> så rör man spelare inom spelområdet.  
-Ex: 'w' och <enter> => Spelaren rör sig en ruta uppåt.
-
+Ex: 'w' och <enter> => Spelaren rör sig en ruta uppåt.  
 Det är möjligt att hoppa över en ruta  
 Ex: 'j', <enter>, d och <enter> => Spelaren hoppar över en ruta åt höger  
 Det är inte möjligt att hoppa över eller genom staket eller gränsen
