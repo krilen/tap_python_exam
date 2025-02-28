@@ -36,7 +36,7 @@ Starta spelet genom 'python -m src.game'
 - #: Monster som jagar dig
 - E: Exit
 - ,: Jord som har förstörts (ett komma)
-- X: Moster eller spelare som har dött
+- X: Monster eller spelaren som har dött
 - ¤: Placerad bomb
 
 **Navigeringsknappar**
@@ -93,7 +93,7 @@ Efter ett tag dyker exit, E, upp som spelaren kan navigera till och avsluta spel
 Efter ett tag dyker monstret upp och börjar jaga spelaren, staket spelar ingen roll för
 monstret den förstör det och fortsätter sin jakt. Monster går alltid 2 steg dock pga
 dålig syn är det inte alltid säkert att monstret rör på sig.  
-Om spelaren dödar monster kommer nya moster dyka upp efter en obestämd tid. Om monstret
+Om spelaren dödar monster kommer nya monster dyka upp efter en obestämd tid. Om monstret
 dödar spelaren avslutas spelet. Monstret kan dödas av spelaren med hjälp av en bomb
 eller om spelaren har en spade i sin "inventory".
 
@@ -106,14 +106,14 @@ mat och då också poäng.
 
 Med hjälp av spaden kan spelare tas sig genom staket utan problem. Dock om spelaren går
 in i gränsen försvinner spaden.  
-Om ett moster står bredvid spelaren och spelaren har spaden kan spelaren döda monstret
+Om ett monster står bredvid spelaren och spelaren har spaden kan spelaren döda monstret
 genom att gå in i monstret.
 
 ### Bomber (Dynamite, C4 och Nitroglycerin)
 
-När en bomb finns i spelarens "inventory" kan den placeras ut där spelaren står. Efter
-3 steg av spelaren detonerar bomben och förstör allt omkring där den placerades.
-Om spelaren eller monster står inom detta område dör man. En placerad bomd detonerar
-direkt om spelaren eller monstret trampar på den även om inte 3 steg har tagits av
-spelaren.  
+När en bomb finns i spelarens "inventory" kan den placeras ut där spelaren står, b.
+Efter 3 steg av spelaren detonerar bomben och förstör allt omkring där den placerades.
+Om spelaren eller monster står inom detta område dör man.  
+En placerad bomd detonerar direkt om spelaren eller monstret trampar på den även om
+inte 3 steg har tagits av spelaren.  
 En placerad bomd försvinner ur spelarens "inventory".
