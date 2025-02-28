@@ -65,10 +65,10 @@ Starta spelet genom 'python -m src.game'
 ### Att navigera
 
 Genom att navigera med navigeringknaparna och <enter> så rör man spelaren, @, inom spelområdet.  
-Ex: 'w' och <enter> => Spelaren rör sig en ruta uppåt.  
-Det är möjligt att hoppa över en ruta  
-Ex: 'j', <enter>, d och <enter> => Spelaren hoppar över en ruta åt höger  
-Det är inte möjligt att hoppa över eller genom staket eller gränsen
+Ex: 'w' och "enter" => Spelaren rör sig en ruta uppåt.  
+Det är möjligt att hoppa över en ruta, först aktivera att hoppa sedan navigera.  
+Ex: 'j', "enter", d och "enter" => Spelaren hoppar över en ruta åt höger  
+Det är inte möjligt att hoppa över eller genom staket (även med spaden) eller gränsen.
 
 ### Samla saker
 
