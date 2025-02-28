@@ -3,7 +3,6 @@ from .gridborder import GridBorder
 from .gridfences import GridFences
 
 from ..entity.player import Player
-from ..entity.monster import Monster
 from ..items.items import Item, Free, PlayerExit, FenceHorizontal, FenceVertical, FenceIntersect, Fence, BorderWall
 
 import random
@@ -34,7 +33,6 @@ class Grid(GridItems, GridBorder, GridFences):
                 self.board.update({ (x, y): Free() })
 
 
-    # Displays the board with all its content
     def __str__(self) -> str:
         """
         Returns the board as a string
@@ -52,7 +50,7 @@ class Grid(GridItems, GridBorder, GridFences):
         return _board
 
 
-    def add_entity(self, entity: Player | Monster, limit: tuple[int, int]=(0, 0)) -> None:
+    def add_entity(self, entity: Player | Any, limit: tuple[int, int]=(0, 0)) -> None:
         """
         Add the player to a random position somewhere in the middle of the board 
         """
@@ -65,19 +63,18 @@ class Grid(GridItems, GridBorder, GridFences):
         
         
         while True:
-            _pos = random.randint(_start_pos_x_min, _start_pos_x_max), random.randint(_start_pos_y_min, _start_pos_y_max)
+            pos = random.randint(_start_pos_x_min, _start_pos_x_max), random.randint(_start_pos_y_min, _start_pos_y_max)
 
-            if isinstance(self.board[_pos], Free):
+            if isinstance(self.board[pos], Free):
                 
-                self.board[_pos] = entity
-                entity.add_old_pos(_pos, Free())
+                self.board[pos] = entity
+                entity.add_old_pos(pos, Free())
                 break
 
 
-    def get_path(self, entity: Player | Monster, move: tuple[int, int]) -> list[tuple[int, int]]:
+    def get_path(self, entity: Player | Any, move: tuple[int, int]) -> list[tuple[int, int]]:
         """
         A method that calculates the path from a position using a move (not end_pos)
-        
         Ex pos: (2,4) move: (3,2) => path: [(2, 4), (3, 4), (3, 5), (4, 5), (4, 6), (5, 6)]
            The first element in the path list is the current position
            The last elment is the end position ((2,4) + (3,2) = (5,6))
@@ -126,7 +123,7 @@ class Grid(GridItems, GridBorder, GridFences):
         return (pos1[0] - pos2[0]), (pos1[1] - pos2[1])
     
     
-    def move_position(self, entity: Player | Monster, new_pos: tuple[int, int], item: Item =Free()) -> None:
+    def move_position(self, entity: Player | Any, new_pos: tuple[int, int], item: Item =Free()) -> None:
         """
         Method that moves items that moves (Player, Monsters)
         """

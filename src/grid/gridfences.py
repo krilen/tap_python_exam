@@ -4,14 +4,20 @@ import random
 
 
 class GridFences():
+    """
+    A class that created by random fences within the Border walls. A fence can be destoyed 
+    if the Player hasthe shovel or it is near when a bomb detonate. The Moster also 
+    destroys a fench. 
+    """
     
     def __init__(self):
         pass
     
     # Add fences to act as random walls
-    def add_fences(self, nr_of_fences, min_size, max_size):
-        #Creates fences within the perimeter of the game by random
-        #They can be destoyed
+    def add_fences(self, nr_of_fences: int, min_size: int, max_size: int) -> None:
+        """
+        Method to build and add the random fences to the board
+        """
         r_fence = 0
         
         while r_fence < nr_of_fences:
@@ -20,8 +26,9 @@ class GridFences():
             _fence_pos = random.randint(min_size, self.width -1), random.randint(min_size, self.height -1)
             _fence_size = random.randint(min_size, max_size)
             
+            # Horizontal fences a doubled in length
             if _fence_align in [(1, 0), (-1, 0)]:
-                _fence_size *= 2
+                _fence_size *= 2 
             
             _fence_ok = True
             fence = []
@@ -41,10 +48,12 @@ class GridFences():
                 if ((isinstance(_tile_item, Free)) or 
                     (isinstance(_tile_item, FenceHorizontal) and _fence_align in [(1, 0), (-1, 0)]) or 
                     (isinstance(_tile_item, FenceVertical) and _fence_align in [(0, 1), (0, -1)])):
+                    
                     fence.append({_fence_pos: _fence_types[_fence_align]()})
                     
                 elif ((isinstance(_tile_item, FenceHorizontal) and _fence_align not in [(1, 0), (-1, 0)]) or 
                       (isinstance(_tile_item, FenceVertical) and _fence_align not in [(0, 1), (0, -1)])):
+                    
                     fence.append({_fence_pos: FenceIntersect()})
                     
                 else:

@@ -1,48 +1,52 @@
-from ..items.items import Killed, Destroyed, Free, SetBomb, Shovel
+from ..items.items import Item, Killed, Destroyed, Free, SetBomb, Shovel
+
+from typing import Any
 
 class Player():
-
+    """
+    A class to handle the Player at what it can do
+    """
     def __init__(self):
         super().__init__()
 
         self.symbol: str = "@"
         self.possible_moves: dict[ str: tuple[int, int]] = { "d": (1, 0), "a": (-1, 0), "w": (0, -1), "s": (0, 1) }
-        self._items = []
+        self._items: list = []
         self._score: int = 0
         self._step_count: int = 0
         self._step_free: int = 0
         self._old_pos: dict = {}
-        self._starter_grid = (0, 0)
-        self.can_be_destoyed = True
-        self.alive = (True, "")
+        self._starter_grid: tuple[int, int] = (0, 0)
+        self.can_be_destoyed: bool = True
+        self.alive: tuple[bool, str] = (True, "")
 
 
     # Limit starter
     @property
-    def limit_grid(self) -> list:
+    def limit_grid(self) -> tuple[int, int]:
         return self._starter_grid
 
 
     # Items
     @property
-    def items(self) -> list:
+    def items(self) -> list[Item]:
         return self._items
     
-    def remove_item(self, index: int):
+    def remove_item(self, index: int) -> Item:
         return self._items.pop(index)
 
     @property
-    def inventory(self):
-        return [_item.name for _item in self.items]
+    def inventory(self) -> list[Item]:
+        return [item.name for item in self.items]
     
 
     # Score
     @property
-    def score(self):
+    def score(self) -> int:
         return self._score
 
     @score.setter
-    def score(self, point):
+    def score(self, point: int) -> None:
         
         if self.score == 0 and point > 0:
             self._score += point
@@ -51,50 +55,53 @@ class Player():
             self._score += point
     
     @score.deleter
-    def score(self):
+    def score(self) -> None:
         if self.free_steps == 0 and self.score > 0:
             self._score -= 1
     
     
     # Steps
     @property
-    def steps(self):
+    def steps(self) -> int:
         return self._step_count
     
     
     @steps.setter
-    def steps(self, _):
+    def steps(self, _) -> None:
         self._step_count += 1
     
     
     # Free steps
     @property
-    def free_steps(self):
+    def free_steps(self) -> int:
         return self._step_free
 
     @free_steps.setter
-    def free_steps(self, nr_of_steps: int):
+    def free_steps(self, nr_of_steps: int) -> None:
         self._step_free += nr_of_steps
     
     @free_steps.deleter
-    def free_steps(self):
+    def free_steps(self) -> None:
         if self.free_steps > 0:
             self._step_free -= 1
 
 
     # Old position
     @property
-    def old_pos(self):
+    def old_pos(self) -> tuple[int, int]:
         return self._old_pos
     
 
-    def add_old_pos(self, _pos, _item):
-        self._old_pos = {"pos": _pos, "item": _item}
-
+    def add_old_pos(self, pos: tuple[int, int], item: Item) -> None:
+        self._old_pos = {"pos": pos, "item": item}
 
 
     # Add an item to the playes inventory if it does not already exists
-    def add_player_items(self, item):
+    def add_player_items(self, item) -> None | str:
+        """
+        Method to add item to add items to the playes inventory, if the item  do not already
+        exists in the iventory. Return None or the name of the item if added.
+        """
         
         if item.is_inventory:
             
@@ -111,19 +118,19 @@ class Player():
 
         return None
     
-    # Remove something specific
-    def remove_player_specific_items(self, item, a_class):
+    
+    def remove_player_specific_items(self, item_name: str, a_class: Item) -> Any:
         """
         Remove a specific item and class from the players inventory
         """
-        if item in self.inventory:
-            inventory_remove_index = [i for i, class_item in enumerate(self.items) if item == class_item.name and isinstance(class_item, a_class)][0]
+        if item_name in self.inventory:
+            inventory_remove_index = [i for i, class_item in enumerate(self.items) if item_name == class_item.name and isinstance(class_item, a_class)][0]
             
             return self.remove_item(inventory_remove_index) 
 
 
     # Remove an items of a specic class food, shovel, bombs, ...
-    def remove_player_any_item(self, a_class):
+    def remove_player_any_item(self, a_class: Item) -> None | Any:
         """
         Remove a item of a specific class from the players inventory
         """
@@ -138,9 +145,14 @@ class Player():
 
         else:
             return None
+        
 
     # Players inventory looking nice
-    def get_player_inventory(self):
+    def get_player_inventory(self) -> str:
+        """
+        Method that goes through the players inventory and create a string
+        to be printed.
+        """
         
         s_inventory = " > Inventory:\n"
         _inventory = self.inventory
@@ -156,7 +168,11 @@ class Player():
 
 
     # When the player does a move making sure that is is valid
-    def next_move(self, g, move, jump, m):
+    def next_move(self, g, move: tuple[int, int], jump: bool, m) -> tuple[tuple[int, int], tuple[int, int]]:
+        """
+        Method that makes descision when the player moves what its current an next move should be.
+        Takes into thing like items that are blocking or crossable, ...
+        """
 
         player_movement: list[tuple[int, int]] = g.get_path(self, move)
         player_current_pos = player_movement[0]
@@ -198,8 +214,11 @@ class Player():
     
 
 
-    # What happend to the Player doring a valid move
-    def action(self, g, next_pos, fence_names):
+    # What happend to the Player during a valid move
+    def action(self, g, next_pos: tuple[int, int], fence_names: Item) -> str:
+        """
+        When the player is okej to move to a new position and what could happen at that position.
+        """
         player_message = ""
 
         player_tile = g.board[next_pos]
@@ -247,8 +266,10 @@ class Player():
         return player_message
     
 
-    # When the player dies (very simple)
-    def dies(self, reason):
+    def dies(self, reason: str) -> Item:
+        """
+        Simple method to handle the message when the player dies
+        """
         
         if reason == "bomb":
             message = " > Player was killed by a Bomb!"

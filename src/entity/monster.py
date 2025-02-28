@@ -1,10 +1,12 @@
 from ..items.items import Killed, SetBomb, Destroyed, Item
 
-
+from typing import Any
 import random
 
 class Monster(Item):
-    
+    """
+    A class to handle the Msoter that will chace the Player
+    """
     def __init__(self):
         super().__init__()
         
@@ -13,23 +15,32 @@ class Monster(Item):
         self.points = 100
         self.cross = False
         self.possible_moves: list[tuple[int, int]] = [(2, 0), (-2, 0), (0, -2), (0, 2)]
-        self.move_rate = 1
+        self.move_rate = 3
         self.alive = (True, "")
         self.monster_appears = 60
 
 
     # Old position
     @property
-    def old_pos(self):
+    def old_pos(self) -> tuple[int, int]:
+        """
+        Simple attribute to return the old stored item and position during a move
+        """
         return self._old_pos
     
 
-    def add_old_pos(self, _pos, _item):
-        self._old_pos = {"pos": _pos, "item": _item}
+    def add_old_pos(self, pos: tuple[int, int], item: type[Any]) -> None:
+        """
+        Simple attribute to store the old stored item and position during a move
+        """
+        self._old_pos = {"pos": pos, "item": item}
         
         
-        
-    def dies(self, reason):
+    def dies(self, reason: str) -> Item:
+        """
+        Method to simply handle the different ways the Monster can die and
+        the message that it would send.
+        """
         if reason == "shovel":
             message = " > Player killed the Monster with the Shovel!"
             
@@ -47,7 +58,12 @@ class Monster(Item):
         return Killed()
     
     
-    def should_move(self):
+    def should_move(self) -> bool:
+        """
+        Method that descides IF the monster should move. If the random value (0-9)
+        is higher than the attribute 'move_rate' the monster moves.
+        This is used to see if the method 'action' should be called.        
+        """
         if random.randint(0, 9) < self.move_rate:
             return False
         
@@ -55,7 +71,12 @@ class Monster(Item):
             return True
 
 
-    def action(self, g, monster_pos, p, player_next_pos):
+    def action(self, g, monster_pos: tuple[int, int], p, player_next_pos: tuple[int, int]) -> None:
+        """
+        Method to handle the mosters action, the mostes movements when chacing the player.
+        It calculate the path that it should take. If it steps on any bomb.
+        Ath the end it move the moster to its final position before the next round
+        """
         monster_player_diff = g.path_diff(player_next_pos, monster_pos[0])
         monster_path = g.get_path(self, monster_player_diff)
         
@@ -64,8 +85,6 @@ class Monster(Item):
             
         else:
             monster_next_pos = monster_path[2]
-            
-        print(monster_path)
 
         # For the path of the moster
         for monster_pos in monster_path[1:]:
@@ -87,7 +106,6 @@ class Monster(Item):
             else:
                 g.move_position(self, monster_next_pos, Destroyed())
         
-
         # Monster kills the player, game ends
         if monster_next_pos == player_next_pos:
             g.board[player_next_pos] = p.dies("monster")

@@ -28,9 +28,9 @@ while True:
         break
 
 # Items to be found and used
-itemes = get_items()
-inventory = itemes["inventory"]
-fences = itemes["fence"]
+itemes: dict = get_items()
+inventory: dict = itemes["inventory"]
+fences:dict = itemes["fence"]
 
 # Inventory
 inventory_names: list[str] = list({k for k in inventory.keys()})
@@ -65,13 +65,6 @@ while not command.casefold() in ["q", "x"]:
         # Player movement
         case "d" | "a" | "w" | "s":
             
-            # Add to steptimer
-            for steptime in steptimer_items:
-                steptime_pos, steptime_item = steptimer.add_to_steptimer(steptime)
-                grid.board[steptime_pos] = steptime_item
-            
-            steptimer_items.clear()
-            
             # Player choosen move
             player_move: tuple[int, int] = player.possible_moves[command]
             
@@ -86,19 +79,17 @@ while not command.casefold() in ["q", "x"]:
                 # Player actions
                 messages.append( player.action( grid, player_next_pos, fence_names ))
                 
-                # Check the step timer
-                #for steptime in steptimer_items:
-                #    steptime_pos, steptime_item = steptimer.add_to_steptimer(steptime)
-                #    grid.board[steptime_pos] = steptime_item
-                    
-                #steptimer_items.clear()
-                
-                
+                # Add to steptimer after the player moves
+                for steptime in steptimer_items:
+                    steptime_pos, steptime_item = steptimer.add_to_steptimer(steptime)
+                    grid.board[steptime_pos] = steptime_item
+    
+                steptimer_items.clear()
 
                 # Monster action
                 monster_pos = grid.find_all_items(Monster)
                 monster_move = monster.should_move()
-                                           
+                
                 if monster_pos and monster_move:
                     monster.action( grid, monster_pos, player, player_next_pos )
 
@@ -153,6 +144,7 @@ while not command.casefold() in ["q", "x"]:
             
         case _:
             pass
+
 
     # Add Exit for Player
     if player.steps > exit_appears and not grid.find_all_items(PlayerExit) and player.alive[0]:

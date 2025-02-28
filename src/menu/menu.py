@@ -1,10 +1,11 @@
 
 class Menu():
-    
-    
-    def show(self, g, messages, points):
+    """
+    A class to display the board
+    """
+    def show(self, g, messages: list, points: int) -> None:
         """
-        Visa spelvärlden och antal poäng.
+        Prints out the board, points and any messages
         """
         print()
         print(g)
@@ -13,5 +14,4 @@ class Menu():
                 print(message)
         print()
         print(f" You have {points} point{'' if points == 1 else 's'}.")
-
         print(" --------------------------------------")

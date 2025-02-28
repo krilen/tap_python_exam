@@ -5,54 +5,60 @@ import random
 
 
 class GridItems(GridBomb):
+    """
+    A Class to handle all of the Items that can exists within the board
+    """
     
     def __init__(self):
         super().__init__()
     
 
-    def set_inventory(self, nr_to_place, inventory, player_items):
+    def set_inventory(self, nr_to_place: int, inventory: Item, player_items: Item) -> None:
+        """
+        Adds the inventory on the board by determin what the playes does NOT have in its inventory
+        If the player has it all no new items are added.
+        """
         unused_inventory = {k: v for (k, v) in inventory.items() if v not in player_items}
         inventory_keys = list({ k for k in unused_inventory.keys() })
         
-        _have_placed = 0
-        _tries = 0
+        have_placed = 0
+        _tries_to_place = 0
             
         # To make sure that we only place unique items, no dublicates on the board
-        while _have_placed < nr_to_place and _tries < len(inventory_keys):
+        while have_placed < nr_to_place and _tries_to_place < len(inventory_keys):
             item_place = random.choice(inventory_keys)
-            item_cls = unused_inventory[item_place]
+            new_item = unused_inventory[item_place]
 
-            _items_found = self.find_all_items(type(item_cls))
+            items_found = self.find_all_items(type(new_item))
             _ok_to_place = True
             
-            _tries += 1
+            _tries_to_place += 1
 
             # Item exists but does a "sub item" exist?
-            if _items_found:
-                for _item_found in _items_found:
-                    if item_place == self.board[_item_found].name:
+            if items_found:
+                for item_found in items_found:
+                    if item_place == self.board[item_found].name:
                         _ok_to_place = False
                         break
              
             if not _ok_to_place:
                 continue
 
-            _free_pos = self.find_random_free()
-            self.board[_free_pos] = item_cls
+            self.board[self.find_random_free()] = new_item
 
-            _have_placed += 1
+            have_placed += 1
     
     
     # Find items of a certain type on the board
-    def find_all_items(self, _class: type[Item]) -> list[tuple[int, int]]:
+    def find_all_items(self, a_class: Item) -> list[tuple[int, int]]:
         """
         Find all the items of a certain type on the board (not instances)
         """        
-        return list({k for (k, v) in self.board.items() if isinstance(v, _class)})
+        return list({k for (k, v) in self.board.items() if isinstance(v, a_class)})
     
     
     # Find random free or open tile for use
-    def find_random_free(self):
+    def find_random_free(self) -> tuple[int, int]:
         """
         Find a random free tile
         """
@@ -60,8 +66,8 @@ class GridItems(GridBomb):
         return random.choice(_free_pos)
     
     
-    def place_player_exit(self):
+    def place_player_exit(self) -> None:
         """
-        Place the exit for the player
+        Place the exit for the player, a specific item
         """
         self.board[self.find_random_free()] = PlayerExit()

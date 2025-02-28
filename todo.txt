@@ -69,6 +69,7 @@ Done
 
  Doublecheck
 ------------------------------------
+Done
  * Message when death
  * Se över poäng hanteringen
 
@@ -83,6 +84,6 @@ Done
 ------------------------------------
  * Testa
 
- * CleanUp - started to....
+ * Done: CleanUp - started to....
  * REVIEW, REVIEW AND REVIEW
  * Test again
