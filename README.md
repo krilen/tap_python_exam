@@ -65,7 +65,7 @@ Starta spelet genom 'python -m src.game'
 
 ### Att navigera
 
-Genom att navigera med navigeringknaparna och <enter> så rör man spelaren, @, inom spelområdet.  
+Genom att navigera med navigeringknaparna och "enter" så rör man spelaren, @, inom spelområdet.  
 Ex: 'w' och "enter" => Spelaren rör sig en ruta uppåt.  
 Det är möjligt att hoppa över en ruta, först aktivera att hoppa sedan navigera.  
 Ex: 'j', "enter", d och "enter" => Spelaren hoppar över en ruta åt höger  
@@ -75,8 +75,9 @@ Det är inte möjligt att hoppa över eller genom staket (även med spaden) elle
 
 Under spelets gång dyker det upp saker, ?, på spelplanen som spelaren kan navigera till för att
 plocka upp. Saken hamnar i spelarens "inventory" tills man använder dem. Dock om spelaren har
-allt som kan plockas upp i sin "inventory" kommer inget nytt att placeras ut. Dock kommer
-använda saker kommer att placeras ut igen efter en tid.
+allt som kan plockas upp i sin "inventory" kommer inget nytt att placeras ut. Saker saom har 
+använts kommer att placeras ut igen efter en tid.  
+Ingen sak kommer att placeras ut på en ruta som anses vara "förstörd".
 
 ### Staket och gränsen
 
